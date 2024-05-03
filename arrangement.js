@@ -9,7 +9,7 @@ let lastSwapTime = 0;
 const millisPerSwap = 3000;
 
 // global variables for colors
-const bg_color1 = [71, 222, 219];
+const bg_color1 = 'white';
 
 function setup () {
   // create the drawing canvas, save the canvas element
@@ -50,8 +50,8 @@ function draw () {
   let h = canvasHeight / 4;
   for(let i=0; i<4; i++) {
     for(let j=0; j<7; j++) {
-      let y = h/2 + h*i;
-      let x = w/2 + w*j;
+      let y = h/2 + h*i+random(-10,10);
+      let x = w/2 + w*j+random(-10,10);
      
         // center face
         let eye_value = int(random(2,4));
@@ -69,7 +69,7 @@ function draw () {
         translate(x, y);
         scale(w/25, h/25);
         
-        orangeAlienFace(tilt_value, eye_value, mouth_value);
+        drawface(9);
         pop();
       
     }
