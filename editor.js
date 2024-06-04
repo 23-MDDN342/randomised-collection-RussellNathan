@@ -83,7 +83,7 @@ function draw () {
   scale(face_scale);
 
   push();
-  drawface(s1);
+  drawface(s1,s2);
 
   pop();
 

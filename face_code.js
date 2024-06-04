@@ -23,7 +23,7 @@ function preload(){
     pupilCoords     =   loadStrings('coords/pupil.array');
 }
 
-function drawface(iEye) {
+function drawface(iEye,sPupil) {
     let bezierJoin = 0;
 
     //stroke parameters
@@ -32,86 +32,102 @@ function drawface(iEye) {
     // noFill();
     fill('black');
 
-    //eye l
-    let coords  =   split(eyesCoords[iEye],',');
-    let eyeTransX = 0;
-    let eyeTransY = 0;
-    // beginShape();
+    /*
+    
+        part-TransX     =   moves the face part after the scale has been applied
+        part-TransY     =   ~
+        part-OffsetX    =   shifts the origin of the body part, useful for shifting where the part scales from
+        part-OffsetY    =   ~
+        part-Scale      =   scales the face part
 
+    */
+
+    //EYE LEFT
+    let coords  =   split(eyesCoords[iEye],',');
+    let L_eyeTransX = 0;
+    let L_eyeTransY = 0;
+    let L_eyeOffsetX = 1;
+    let L_eyeOffsetY = 0;
+    let L_eyeScale  = 1;
+    // define if the gaps in the beziers should be bridged, as some shapes contain disjointed parts
     if (iEye==6) {
         bezierJoin = 2;
     }
 
-    for (let i=0; i<coords.length; i+=6+bezierJoin)
-    {
-        // curve(coords[i],    coords[i+1]+eyeTransY,    coords[i+2],    coords[i+3]+eyeTransY,    coords[i+4],    coords[i+5]+eyeTransY,    coords[i+6],    coords[i+7]+eyeTransY);
-        // curveVertex(coords[i],coords[i+1]+eyeTransY);
-        // print('(',  coords[i],  ',',    coords[i+1],    ')');
-        for (let j=0; j<1; j+=1/BrushDetail){
-            ellipse(
-                //x bezier coords
-                bezierPoint(coords[i+0]  -eyeTransX,    coords[i+2]  -eyeTransX,    coords[i+4]  -eyeTransX,    coords[i+6]  -eyeTransX,    j),
-                //y bezier coords
-                bezierPoint(coords[i+1]  -eyeTransY,    coords[i+3]  -eyeTransY,    coords[i+5]  -eyeTransY,    coords[i+7]  -eyeTransY,    j),
-                j/1.7+(PI%i)/100,j/2.7+(PI%i)/100  );
-        }
-        // print(bezierPoint(coords[i],    coords[i+2],    coords[i+4],    coords[i+6],0.5));
-    }
-    // endShape();
+    DrawShape(coords,   L_eyeTransX,L_eyeTransY,    L_eyeOffsetX,L_eyeOffsetY,    L_eyeScale,1,1,0,bezierJoin);
 
-
-
-    //PUPIL
+    //PUPIL LEFT
     coords  =   split(pupilCoords[0],',');
-    let pupilTransX = -2;
-    let pupilTransY = -0.5;
-    for (let i=0; i<coords.length; i+=6)
-    {
-        for (let j=0; j<1; j+=1/BrushDetail){
-            ellipse(
-                //x bezier coords
-                bezierPoint(coords[i+0]  -pupilTransX,    coords[i+2]  -pupilTransX,    coords[i+4]  -pupilTransX,    coords[i+6]  -pupilTransX,    j),
-                //y bezier coords
-                bezierPoint(coords[i+1]  -pupilTransY,    coords[i+3]  -pupilTransY,    coords[i+5]  -pupilTransY,    coords[i+7]  -pupilTransY,    j),
-                j/1.7+(PI%i)/100  );
-        }
+    let L_pupilTransX = -0.7;
+    let L_pupilTransY = 0.7;
+    let L_pupilOffsetX = -1.5;
+    let L_pupilOffsetY = -0.2;
+    let L_pupilScale  = sPupil/100+0.5;
+
+    DrawShape(coords,   L_pupilTransX,L_pupilTransY,    L_pupilOffsetX,L_pupilOffsetY,    L_pupilScale,1,1,0,0);
+
+    //EYE RIGHT
+    coords  =   split(eyesCoords[iEye],',');
+    let R_eyeTransX = 3;
+    let R_eyeTransY = 0;
+    let R_eyeOffsetX = 0;
+    let R_eyeOffsetY = 0;
+    let R_eyeScale  = 1;
+    let R_eyeScaleX  = -1;
+    let R_eyeScaleY  = 1;
+    let R_eyeTilt  = 0;
+    // define if the gaps in the beziers should be bridged, as some shapes contain disjointed parts
+    if (iEye==6) {
+        bezierJoin = 2;
     }
+
+    DrawShape(coords,   R_eyeTransX,R_eyeTransY,    R_eyeOffsetX,R_eyeOffsetY,    R_eyeScale,R_eyeScaleX,R_eyeScaleY,   R_eyeTilt ,bezierJoin);
+
+    //PUPIL RIGHT
+    coords  =   split(pupilCoords[0],',');
+    let R_pupilTransX = 3;
+    let R_pupilTransY = 0;
+    let R_pupilOffsetX = -1.5;
+    let R_pupilOffsetY = -0.5;
+    let R_pupilScale  = sPupil/100+0.4;
+
+    DrawShape(coords,   R_pupilTransX,R_pupilTransY,    R_pupilOffsetX,R_pupilOffsetY,    R_pupilScale,1,1,0,0);
 
     //NOSE
     coords  =   split(noseCoords[iNose],',');
-    let noseTransX = -1;
-    let noseTransY = -1;
+    let noseTransX = 1;
+    let noseTransY = 1;
+    let noseOffsetX = 0;
+    let noseOffsetY = 0;
+    let noseScale  = 1;
 
-    for (let i=0; i<coords.length; i+=6)
-    {
-        for (let j=0; j<1; j+=1/BrushDetail){
-            ellipse(
-                //x bezier coords
-                bezierPoint(coords[i+0]  -noseTransX,    coords[i+2]  -noseTransX,    coords[i+4]  -noseTransX,    coords[i+6]  -noseTransX,    j),
-                //y bezier coords
-                bezierPoint(coords[i+1]  -noseTransY,    coords[i+3]  -noseTransY,    coords[i+5]  -noseTransY,    coords[i+7]  -noseTransY,    j),
-                j/1.7+(PI%i)/100  );
-        }
-    }
+    DrawShape(coords,   noseTransX,noseTransY,    noseOffsetX,noseOffsetY,    noseScale,1,1,0,bezierJoin);   
 
     //MOUTH
     coords  =   split(mouthCoords[iMouth],',');
-    let mouthTransX = -1;
-    let mouthTransY = -6;
+    let mouthTransX = 1;
+    let mouthTransY = 6;
+    let mouthOffsetX = 0;
+    let mouthOffsetY = 0;
+    let mouthScale = 1;
 
-    for (let i=0; i<coords.length; i+=6)
+    DrawShape(coords,   mouthTransX,mouthTransY,    mouthOffsetX,mouthOffsetY,    mouthScale,1,1,0,bezierJoin);
+}
+
+function DrawShape(coords,dotTransX,dotTransY,dotOffsetX,dotOffsetY,shapeScale,shapeScaleX,shapeScaleY,shapeTilt,bezierJoin){
+    push();
+    translate(dotTransX, dotTransY);
+    scale(shapeScale*shapeScaleX,shapeScale*shapeScaleY);
+    for (let i=0; i<coords.length; i+=6 + bezierJoin)
     {
         for (let j=0; j<1; j+=1/BrushDetail){
             ellipse(
                 //x bezier coords
-                bezierPoint(coords[i+0]  -mouthTransX,    coords[i+2]  -mouthTransX,    coords[i+4]  -mouthTransX,    coords[i+6]  -mouthTransX,    j),
+                bezierPoint(coords[i+0]  -dotOffsetX,    coords[i+2]  -dotOffsetX,    coords[i+4]  -dotOffsetX,    coords[i+6]  -dotOffsetX,    j),
                 //y bezier coords
-                bezierPoint(coords[i+1]  -mouthTransY,    coords[i+3]  -mouthTransY,    coords[i+5]  -mouthTransY,    coords[i+7]  -mouthTransY,    j),
+                bezierPoint(coords[i+1]  -dotOffsetY,    coords[i+3]  -dotOffsetY,    coords[i+5]  -dotOffsetY,    coords[i+7]  -dotOffsetY,    j),
                 j/1.7+(PI%i)/100  );
         }
     }
-}
-
-function DrawDot(){
-
+    pop();
 }
